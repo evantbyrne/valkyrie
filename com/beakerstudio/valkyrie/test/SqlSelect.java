@@ -4,6 +4,10 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import com.beakerstudio.valkyrie.sql.Select;
 
+/**
+ * SQL Select Tests
+ * @author Evan Byrne
+ */
 public class SqlSelect {
 
 	/**
@@ -13,7 +17,7 @@ public class SqlSelect {
 	public void test_all() {
 		
 		Select s = new Select("mytable");
-		assertEquals(s.sql(), "SELECT * FROM `mytable`");
+		assertEquals("SELECT * FROM `mytable`", s.build().sql());
 		
 	}
 	
@@ -25,21 +29,21 @@ public class SqlSelect {
 		
 		Select s = new Select("mytable");
 		s.where("id", "123");
-		assertEquals(s.sql(), "SELECT * FROM `mytable` WHERE `mytable`.`id` = ?");
-		assertTrue(s.values().indexOf("123") == 0);
+		assertEquals("SELECT * FROM `mytable` WHERE `mytable`.`id` = ?", s.build().sql());
+		assertTrue(s.params().indexOf("123") == 0);
 		
 		// AND
 		s.where("name", "Evan");
-		assertEquals(s.sql(), "SELECT * FROM `mytable` WHERE `mytable`.`id` = ? AND `mytable`.`name` = ?");
-		assertTrue(s.values().indexOf("123") == 0);
-		assertTrue(s.values().indexOf("Evan") == 1);
+		assertEquals("SELECT * FROM `mytable` WHERE `mytable`.`id` = ? AND `mytable`.`name` = ?", s.build().sql());
+		assertTrue(s.params().indexOf("123") == 0);
+		assertTrue(s.params().indexOf("Evan") == 1);
 		
 		// OR
 		s = new Select("mytable");
 		s.where("id", "321").or().where("name", "Byrne");
-		assertEquals(s.sql(), "SELECT * FROM `mytable` WHERE `mytable`.`id` = ? OR `mytable`.`name` = ?");
-		assertTrue(s.values().indexOf("321") == 0);
-		assertTrue(s.values().indexOf("Byrne") == 1);
+		assertEquals("SELECT * FROM `mytable` WHERE `mytable`.`id` = ? OR `mytable`.`name` = ?", s.build().sql());
+		assertTrue(s.params().indexOf("321") == 0);
+		assertTrue(s.params().indexOf("Byrne") == 1);
 		
 	}
 

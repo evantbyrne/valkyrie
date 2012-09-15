@@ -1,12 +1,13 @@
 package com.beakerstudio.valkyrie.sql;
 
 import java.util.Vector;
+import com.beakerstudio.valkyrie.Util;
 
 /**
  * Select Class
  * @author Evan Byrne
  */
-public class Select {
+public class Select extends Where {
 
 	/**
 	 * Constructor
@@ -14,49 +15,30 @@ public class Select {
 	 */
 	public Select(String table) {
 		
-		// ...
+		super(table);
 		
 	}
 	
 	/**
-	 * 
-	 * @param String Column
-	 * @param String Value
+	 * Build
 	 * @return this
 	 */
-	public Select where(String column, String value) {
+	public Select build() {
 		
+		this.reset_params();
+		Vector<String> sql = new Vector<String>();
+		sql.add(String.format("SELECT * FROM `%s`", this.table));
+		
+		// Where
+		String where = this.sql_for_where();
+		if(where != null) {
+		
+			sql.add(where);
+		
+		}
+		
+		this.set_sql(Util.join(sql.toArray(), " "));
 		return this;
-		
-	}
-	
-	/**
-	 * Or
-	 * @return this
-	 */
-	public Select or() {
-		
-		return this;
-		
-	}
-	
-	/**
-	 * Sql
-	 * @return String
-	 */
-	public String sql() {
-		
-		return "";
-		
-	}
-	
-	/**
-	 * Values
-	 * @return Vector<String>
-	 */
-	public Vector<String> values() {
-		
-		return new Vector<String>();
 		
 	}
 	

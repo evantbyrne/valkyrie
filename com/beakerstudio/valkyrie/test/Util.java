@@ -3,6 +3,10 @@ package com.beakerstudio.valkyrie.test;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
+/**
+ * Util Tests
+ * @author Evan Byrne
+ */
 public class Util {
 
 	/**
