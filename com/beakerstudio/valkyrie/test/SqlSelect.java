@@ -46,5 +46,27 @@ public class SqlSelect {
 		assertTrue(s.params().indexOf("Byrne") == 1);
 		
 	}
+	
+	/**
+	 * Test Limit
+	 */
+	@Test
+	public void test_limit() {
+		
+		Select s = new Select("mytable");
+		s.limit(1);
+		assertEquals("SELECT * FROM \"mytable\" LIMIT ?", s.build().sql());
+		assertTrue(s.params().indexOf("1") == 0);
+		
+		s.limit(5);
+		assertEquals("SELECT * FROM \"mytable\" LIMIT ?", s.build().sql());
+		assertTrue(s.params().indexOf("5") == 0);
+		
+		s.where("foo", "bar");
+		assertEquals("SELECT * FROM \"mytable\" WHERE \"mytable\".\"foo\" = ? LIMIT ?", s.build().sql());
+		assertTrue(s.params().indexOf("bar") == 0);
+		assertTrue(s.params().indexOf("5") == 1);
+		
+	}
 
 }

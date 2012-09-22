@@ -10,12 +10,30 @@ import com.beakerstudio.valkyrie.Util;
 public class Select extends Where {
 
 	/**
+	 * Limit
+	 */
+	protected Integer limit;
+	
+	/**
 	 * Constructor
 	 * @param String Table
 	 */
 	public Select(String table) {
 		
 		super(table);
+		this.limit = null;
+		
+	}
+	
+	/**
+	 * Limit
+	 * @param int
+	 * @return this
+	 */
+	public Select limit(int n) {
+		
+		this.limit = n;
+		return this;
 		
 	}
 	
@@ -35,6 +53,14 @@ public class Select extends Where {
 		
 			sql.add(where);
 		
+		}
+		
+		// Limit
+		if(this.limit != null) {
+			
+			sql.add("LIMIT ?");
+			this.add_param(this.limit.toString());
+			
 		}
 		
 		this.set_sql(Util.join(sql.toArray(), " "));
