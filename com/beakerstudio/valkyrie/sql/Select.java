@@ -27,7 +27,7 @@ public class Select extends Where {
 		
 		this.reset_params();
 		Vector<String> sql = new Vector<String>();
-		sql.add(String.format("SELECT * FROM `%s`", this.table));
+		sql.add(String.format("SELECT * FROM \"%s\"", this.table));
 		
 		// Where
 		String where = this.sql_for_where();

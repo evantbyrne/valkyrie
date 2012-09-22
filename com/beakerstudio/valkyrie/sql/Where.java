@@ -81,7 +81,7 @@ public abstract class Where extends Base {
 						
 					}
 						
-					sql.add(String.format("`%s`.`%s` = ?", this.table, w.get("column")));
+					sql.add(String.format("\"%s\".\"%s\" = ?", this.table, w.get("column")));
 					this.add_param(w.get("value"));
 					
 				// OR

@@ -20,7 +20,7 @@ public class IntegerColumn extends Column {
 	 */
 	public String build() {
 		
-		return String.format("`%s` INTEGER", this.get_name());
+		return String.format("\"%s\" INTEGER", this.get_name());
 		
 	}
 

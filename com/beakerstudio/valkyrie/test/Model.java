@@ -47,11 +47,11 @@ public class Model {
 		
 		// Integer
 		IntegerColumn _int = new IntegerColumn("foo");
-		assertEquals("`foo` INTEGER", _int.build());
+		assertEquals("\"foo\" INTEGER", _int.build());
 		
 		// Text
 		TextColumn _text = new TextColumn("foo");
-		assertEquals("`foo` TEXT", _text.build());
+		assertEquals("\"foo\" TEXT", _text.build());
 		
 	}
 

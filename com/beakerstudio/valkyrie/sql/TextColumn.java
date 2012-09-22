@@ -20,7 +20,7 @@ public class TextColumn extends Column {
 	 */
 	public String build() {
 		
-		return String.format("`%s` TEXT", this.get_name());
+		return String.format("\"%s\" TEXT", this.get_name());
 		
 	}
 

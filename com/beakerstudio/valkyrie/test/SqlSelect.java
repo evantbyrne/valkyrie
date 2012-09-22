@@ -17,7 +17,7 @@ public class SqlSelect {
 	public void test_all() {
 		
 		Select s = new Select("mytable");
-		assertEquals("SELECT * FROM `mytable`", s.build().sql());
+		assertEquals("SELECT * FROM \"mytable\"", s.build().sql());
 		
 	}
 	
@@ -29,19 +29,19 @@ public class SqlSelect {
 		
 		Select s = new Select("mytable");
 		s.where("id", "123");
-		assertEquals("SELECT * FROM `mytable` WHERE `mytable`.`id` = ?", s.build().sql());
+		assertEquals("SELECT * FROM \"mytable\" WHERE \"mytable\".\"id\" = ?", s.build().sql());
 		assertTrue(s.params().indexOf("123") == 0);
 		
 		// AND
 		s.where("name", "Evan");
-		assertEquals("SELECT * FROM `mytable` WHERE `mytable`.`id` = ? AND `mytable`.`name` = ?", s.build().sql());
+		assertEquals("SELECT * FROM \"mytable\" WHERE \"mytable\".\"id\" = ? AND \"mytable\".\"name\" = ?", s.build().sql());
 		assertTrue(s.params().indexOf("123") == 0);
 		assertTrue(s.params().indexOf("Evan") == 1);
 		
 		// OR
 		s = new Select("mytable");
 		s.where("id", "321").or().where("name", "Byrne");
-		assertEquals("SELECT * FROM `mytable` WHERE `mytable`.`id` = ? OR `mytable`.`name` = ?", s.build().sql());
+		assertEquals("SELECT * FROM \"mytable\" WHERE \"mytable\".\"id\" = ? OR \"mytable\".\"name\" = ?", s.build().sql());
 		assertTrue(s.params().indexOf("321") == 0);
 		assertTrue(s.params().indexOf("Byrne") == 1);
 		
