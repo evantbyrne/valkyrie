@@ -16,7 +16,7 @@ public class CreateTable extends Base {
 	private Vector<Column> columns;
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	public CreateTable(String sqlite_table) {
 		
@@ -38,7 +38,7 @@ public class CreateTable extends Base {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	@Override
 	public CreateTable build() {

@@ -7,7 +7,7 @@ package com.beakerstudio.valkyrie.sql;
 public class IntegerColumn extends Column {
 	
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	public IntegerColumn(String name) {
 		
@@ -16,7 +16,7 @@ public class IntegerColumn extends Column {
 	}
 
 	/**
-	 * @inheritDoc
+	 * {@inheritDoc}
 	 */
 	public String build() {
 		

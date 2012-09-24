@@ -15,8 +15,7 @@ public class Select extends Where {
 	protected Integer limit;
 	
 	/**
-	 * Constructor
-	 * @param String Table
+	 * {@inheritDoc}
 	 */
 	public Select(String table) {
 		

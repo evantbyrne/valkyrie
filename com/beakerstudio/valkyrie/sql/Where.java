@@ -16,7 +16,7 @@ public abstract class Where extends Base {
 	protected Vector<HashMap<String, String>> where_list;
 	
 	/**
-	 * Constructor
+	 * {@inheritDoc}
 	 */
 	public Where(String table) {
 		
