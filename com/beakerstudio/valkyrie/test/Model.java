@@ -73,10 +73,8 @@ public class Model {
 		
 		assertEquals("Evan", fb.name);
 		
+		fb.drop_table();
 		Connection.close();
-		
-		File fh = new File("testdb");
-		fh.delete();
 		
 	}
 

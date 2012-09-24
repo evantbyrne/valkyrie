@@ -7,6 +7,7 @@ import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
 import com.beakerstudio.valkyrie.sql.Column;
 import com.beakerstudio.valkyrie.sql.CreateTable;
+import com.beakerstudio.valkyrie.sql.DropTable;
 import com.beakerstudio.valkyrie.sql.IntegerColumn;
 import com.beakerstudio.valkyrie.sql.Select;
 import com.beakerstudio.valkyrie.sql.TextColumn;
@@ -107,6 +108,21 @@ public abstract class Model {
 			
 		}
 		
+		Connection.get().execute(t.build().sql());
+		
+		return this;
+		
+	}
+	
+	/**
+	 * Drop Table
+	 * @return this
+	 * @throws SQLiteException
+	 * @throws Exception
+	 */
+	public Model drop_table() throws SQLiteException, Exception {
+		
+		DropTable t = new DropTable(this.sqlite_table());
 		Connection.get().execute(t.build().sql());
 		
 		return this;
