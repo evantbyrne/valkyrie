@@ -6,7 +6,6 @@ import java.util.Vector;
 import com.almworks.sqlite4java.SQLiteConnection;
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
-import com.beakerstudio.valkyrie.sql.Base;
 
 /**
  * Connection Class

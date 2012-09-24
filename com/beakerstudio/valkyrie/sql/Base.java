@@ -89,5 +89,11 @@ public abstract class Base {
 		return this.sql;
 		
 	}
+	
+	/**
+	 * Build
+	 * @return Base
+	 */
+	public abstract Base build();
 
 }
