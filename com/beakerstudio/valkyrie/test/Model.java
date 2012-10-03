@@ -60,20 +60,22 @@ public class Model {
 	 * @throws SQLiteException 
 	 */
 	@Test
-	public void test_get() throws Exception {
+	public void test_insert_and_get() throws Exception {
 		
 		Connection.open("testdb");
-		FooBar fb = new FooBar();
+		FooBar f1 = new FooBar();
 		
-		fb.create_table();
-		Connection.get().execute("INSERT INTO foobar (id, name) VALUES ('123', 'Evan');");
+		f1.create_table();
+		f1.id = 123;
+		f1.name = "Evan";
+		f1.insert();
 		
-		fb.id = 123;
-		fb.get();
+		FooBar f2 = new FooBar();
+		f2.id = 123;
+		f2.get();
+		assertEquals("Evan", f2.name);
 		
-		assertEquals("Evan", fb.name);
-		
-		fb.drop_table();
+		f1.drop_table();
 		Connection.close();
 		
 	}

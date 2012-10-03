@@ -8,6 +8,7 @@ import com.almworks.sqlite4java.SQLiteStatement;
 import com.beakerstudio.valkyrie.sql.Column;
 import com.beakerstudio.valkyrie.sql.CreateTable;
 import com.beakerstudio.valkyrie.sql.DropTable;
+import com.beakerstudio.valkyrie.sql.Insert;
 import com.beakerstudio.valkyrie.sql.IntegerColumn;
 import com.beakerstudio.valkyrie.sql.Select;
 import com.beakerstudio.valkyrie.sql.TextColumn;
@@ -124,6 +125,54 @@ public abstract class Model {
 		
 		DropTable t = new DropTable(this.sqlite_table());
 		Connection.get().execute(t.build().sql());
+		
+		return this;
+		
+	}
+	
+	/**
+	 * Insert
+	 * @return this
+	 * @throws Exception 
+	 * @throws SQLiteException 
+	 */
+	public Model insert() throws SQLiteException, Exception {
+		
+		Insert ins = new Insert(this.sqlite_table());
+		
+		// Build where
+		Class<?> klass = this.getClass();
+		for(String col : columns.get(klass).keySet()) {
+			
+			try {
+				
+				Object value = klass.getDeclaredField(col).get(this);
+				if(value != null) {
+					
+					ins.set(col, value.toString());
+					
+				}
+				
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NoSuchFieldException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		
+		// Insert row
+		ins.build();
+		SQLiteStatement st = Connection.get().prepare(ins.sql(), ins.params());
+		st.step();
 		
 		return this;
 		
