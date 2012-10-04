@@ -7,6 +7,7 @@ import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
 import com.beakerstudio.valkyrie.sql.Column;
 import com.beakerstudio.valkyrie.sql.CreateTable;
+import com.beakerstudio.valkyrie.sql.Delete;
 import com.beakerstudio.valkyrie.sql.DropTable;
 import com.beakerstudio.valkyrie.sql.Insert;
 import com.beakerstudio.valkyrie.sql.IntegerColumn;
@@ -254,6 +255,54 @@ public abstract class Model {
 			st.dispose();
 		
 		}
+		
+		return this;
+		
+	}
+	
+	/**
+	 * Delete
+	 * @return this
+	 * @throws Exception 
+	 * @throws SQLiteException 
+	 */
+	public Model delete() throws SQLiteException, Exception {
+		
+		Delete d = new Delete(this.sqlite_table());
+		
+		// Build where
+		Class<?> klass = this.getClass();
+		for(String col : columns.get(klass).keySet()) {
+			
+			try {
+				
+				Object value = klass.getDeclaredField(col).get(this);
+				if(value != null) {
+					
+					d.where(col, value.toString());
+					
+				}
+				
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NoSuchFieldException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		
+		// Delete row
+		d.build();
+		SQLiteStatement st = Connection.get().prepare(d.sql(), d.params());
+		st.step();
 		
 		return this;
 		

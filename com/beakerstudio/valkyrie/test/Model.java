@@ -60,7 +60,7 @@ public class Model {
 	 * @throws SQLiteException 
 	 */
 	@Test
-	public void test_insert_and_get() throws Exception {
+	public void test_insert_get_and_delete() throws Exception {
 		
 		Connection.open("testdb");
 		FooBar f1 = new FooBar();
@@ -74,6 +74,12 @@ public class Model {
 		f2.id = 123;
 		f2.get();
 		assertEquals("Evan", f2.name);
+		
+		f2.delete();
+		FooBar f3 = new FooBar();
+		f3.id = 123;
+		f3.get();
+		assertNull(f3.name);
 		
 		f1.drop_table();
 		Connection.close();
