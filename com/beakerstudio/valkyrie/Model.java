@@ -13,6 +13,7 @@ import com.beakerstudio.valkyrie.sql.Insert;
 import com.beakerstudio.valkyrie.sql.IntegerColumn;
 import com.beakerstudio.valkyrie.sql.Select;
 import com.beakerstudio.valkyrie.sql.TextColumn;
+import com.beakerstudio.valkyrie.sql.Update;
 
 /**
  * Model Class
@@ -24,6 +25,11 @@ public abstract class Model {
 	 * Columns
 	 */
 	protected static LinkedHashMap<Class<?>, LinkedHashMap<String, Column>> columns = new LinkedHashMap<Class<?>, LinkedHashMap<String, Column>>();
+	
+	/**
+	 * Primary Keys
+	 */
+	protected static LinkedHashMap<Class<?>, String> primary_keys = new LinkedHashMap<Class<?>, String>();
 	
 	/**
 	 * Column
@@ -63,7 +69,9 @@ public abstract class Model {
 				
 				if(f.isAnnotationPresent(com.beakerstudio.valkyrie.Column.class)) {
 					
+					com.beakerstudio.valkyrie.Column annotation = f.getAnnotation(com.beakerstudio.valkyrie.Column.class);
 					String t = f.getType().getSimpleName();
+					
 					
 					// Integer
 					if(t.equals("Integer")) {
@@ -73,6 +81,14 @@ public abstract class Model {
 					} else if(t.equals("String")) {
 						
 						add_column(klass, new TextColumn(f.getName()));
+						
+					}
+					
+					
+					// Primary key
+					if(annotation.primary()) {
+						
+						primary_keys.put(klass, f.getName());
 						
 					}
 					
@@ -302,6 +318,64 @@ public abstract class Model {
 		// Delete row
 		d.build();
 		SQLiteStatement st = Connection.get().prepare(d.sql(), d.params());
+		st.step();
+		
+		return this;
+		
+	}
+	
+	/**
+	 * Save
+	 * @return this
+	 * @throws Exception 
+	 * @throws SQLiteException 
+	 */
+	public Model save() throws SQLiteException, Exception {
+		
+		Update u = new Update(this.sqlite_table());
+		Class<?> klass = this.getClass();
+		String primary_key = primary_keys.get(klass);
+		
+		for(String col : columns.get(klass).keySet()) {
+			
+			try {
+				
+				Object value = klass.getDeclaredField(col).get(this);
+				if(value != null) {
+					
+					// Primary key
+					if(col == primary_key) {
+						
+						u.where(col, value.toString());
+					
+					// Value to be updated
+					} else {
+					
+						u.set(col, value.toString());
+						
+					}
+					
+				}
+				
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NoSuchFieldException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		
+		// Update row
+		u.build();
+		SQLiteStatement st = Connection.get().prepare(u.sql(), u.params());
 		st.step();
 		
 		return this;

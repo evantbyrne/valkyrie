@@ -9,7 +9,7 @@ import com.beakerstudio.valkyrie.Model;
  */
 public class FooBar extends Model {
 	
-	@Column
+	@Column(primary = true)
 	public Integer id;
 	
 	@Column

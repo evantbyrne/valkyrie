@@ -7,7 +7,7 @@ import com.beakerstudio.valkyrie.Util;
  * Insert Class
  * @author Evan Byrne
  */
-public class Insert extends Where {
+public class Insert extends Base {
 
 	/**
 	 * Columns

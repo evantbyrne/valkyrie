@@ -55,9 +55,8 @@ public class Model {
 	}
 	
 	/**
-	 * Test Get
-	 * @throws Exception 
-	 * @throws SQLiteException 
+	 * Test Insert, Get, and Delete
+	 * @throws Exception
 	 */
 	@Test
 	public void test_insert_get_and_delete() throws Exception {
@@ -80,6 +79,34 @@ public class Model {
 		f3.id = 123;
 		f3.get();
 		assertNull(f3.name);
+		
+		f1.drop_table();
+		Connection.close();
+		
+	}
+	
+	/**
+	 * Test Update
+	 * @throws Exception
+	 */
+	@Test
+	public void test_update() throws Exception {
+		
+		Connection.open("testdb");
+		FooBar f1 = new FooBar();
+		
+		f1.create_table();
+		f1.id = 123;
+		f1.name = "Evan";
+		f1.insert();
+		
+		f1.name = "Bob";
+		f1.save();
+		
+		FooBar f2 = new FooBar();
+		f2.id = 123;
+		f2.get();
+		assertEquals("Bob", f2.name);
 		
 		f1.drop_table();
 		Connection.close();

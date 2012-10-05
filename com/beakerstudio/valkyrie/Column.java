@@ -9,4 +9,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Column {
 	
+	boolean primary() default false;
+	
 }
