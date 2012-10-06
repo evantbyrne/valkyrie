@@ -2,6 +2,7 @@ package com.beakerstudio.valkyrie;
 
 import java.lang.reflect.Field;
 import java.util.LinkedHashMap;
+import java.util.Vector;
 
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
@@ -196,18 +197,27 @@ public abstract class Model {
 	}
 	
 	/**
+	 * Select
+	 * @return Select
+	 */
+	public Select select() {
+		
+		return new Select(this.sqlite_table(), this.getClass());
+		
+	}
+	
+	/**
 	 * Get
 	 * @return this
 	 * @throws Exception 
 	 * @throws SQLiteException 
 	 */
-	public Model get() throws SQLiteException, Exception {
+	public <T> Model get() throws SQLiteException, Exception {
 		
-		Select s = new Select(this.sqlite_table());
-		s.limit(1);
+		Class<?> klass = this.getClass();
+		Select s = this.select().limit(1);
 		
 		// Build where
-		Class<?> klass = this.getClass();
 		for(String col : columns.get(klass).keySet()) {
 			
 			try {
@@ -236,40 +246,19 @@ public abstract class Model {
 		}
 		
 		// Fetch row
-		s.build();
-		SQLiteStatement st = Connection.get().prepare(s.sql(), s.params());
-		
-		try {
+		Vector<T> res = s.fetch();
+		if(res.size() == 1) {
 			
-			while(st.step()) {
+			T row = res.firstElement();
+			
+			// Populate model object
+			for(String col : columns.get(klass).keySet()) {
 				
-				// Populate model object
-				for(int i = 0; i < st.columnCount(); i++) {
-					
-					String col_name = st.getColumnName(i);
-					String col_type = get_column(klass, col_name).getClass().getSimpleName();
-					Field col_field = klass.getField(col_name);
-					
-					// Integer
-					if(col_type.equals("IntegerColumn")) {
-						
-						col_field.set(this, new Integer(st.columnInt(i)));
-						
-					// Text
-					} else if(col_type.equals("TextColumn")) {
-						
-						col_field.set(this, st.columnString(i));
-						
-					}
-					
-				}
-		
+				Field col_field = klass.getField(col);
+				col_field.set(this, col_field.get(row));
+				
 			}
 			
-		} finally {
-			
-			st.dispose();
-		
 		}
 		
 		return this;

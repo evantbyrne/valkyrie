@@ -26,7 +26,7 @@ public abstract class Where extends Base {
 	}
 	
 	/**
-	 * 
+	 * Where
 	 * @param String Column
 	 * @param String Value
 	 * @return this

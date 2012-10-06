@@ -1,6 +1,7 @@
 package com.beakerstudio.valkyrie.test;
 
-import java.io.File;
+import java.util.Vector;
+
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -79,6 +80,51 @@ public class Model {
 		f3.id = 123;
 		f3.get();
 		assertNull(f3.name);
+		
+		f1.drop_table();
+		Connection.close();
+		
+	}
+	
+	/**
+	 * Test Select
+	 * @throws Exception
+	 */
+	@Test
+	public void test_select() throws SQLiteException, Exception {
+		
+		Connection.open("testdb");
+		FooBar f1 = new FooBar();
+		
+		f1.create_table();
+		f1.id = 1;
+		f1.name = "Foo";
+		f1.insert();
+		
+		Vector<FooBar> res = f1.select().fetch();
+		assertEquals(1, res.size());
+		
+		f1.id = 2;
+		f1.name = "Bar";
+		f1.insert();
+		
+		res = f1.select().fetch();
+		assertEquals(2, res.size());
+		
+		res = f1.select().where("name", "Foo").fetch();
+		assertEquals(1, res.size());
+		
+		res = f1.select().where("name", "Bob").fetch();
+		assertEquals(0, res.size());
+		
+		res = f1.select().where("name", "Bob").or().where("name", "Bar").fetch();
+		assertEquals(1, res.size());
+		
+		res = f1.select().where("name", "Foo").or().where("name", "Bob").fetch();
+		assertEquals(1, res.size());
+		
+		res = f1.select().where("name", "Foo").or().where("name", "Bar").fetch();
+		assertEquals(2, res.size());
 		
 		f1.drop_table();
 		Connection.close();
