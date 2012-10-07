@@ -26,7 +26,7 @@ public class SqlUpdate {
 		assertTrue(u.params().indexOf("Evan") == 0);
 		assertTrue(u.params().indexOf("I like bacon.") == 1);
 		
-		u.where("id", "123");
+		u.eql("id", "123");
 		assertEquals("UPDATE \"mytable\" SET \"name\" = ?, \"bio\" = ? WHERE \"mytable\".\"id\" = ?", u.build().sql());
 		assertTrue(u.params().indexOf("Evan") == 0);
 		assertTrue(u.params().indexOf("I like bacon.") == 1);

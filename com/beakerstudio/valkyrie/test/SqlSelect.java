@@ -28,19 +28,44 @@ public class SqlSelect {
 	public void test_where() {
 		
 		Select s = new Select("mytable");
-		s.where("id", "123");
+		s.eql("id", "123");
 		assertEquals("SELECT * FROM \"mytable\" WHERE \"mytable\".\"id\" = ?", s.build().sql());
 		assertTrue(s.params().indexOf("123") == 0);
 		
+		s = new Select("mytable");
+		s.not("id", "123");
+		assertEquals("SELECT * FROM \"mytable\" WHERE \"mytable\".\"id\" <> ?", s.build().sql());
+		assertTrue(s.params().indexOf("123") == 0);
+		
+		s = new Select("mytable");
+		s.lt("id", "123");
+		assertEquals("SELECT * FROM \"mytable\" WHERE \"mytable\".\"id\" < ?", s.build().sql());
+		assertTrue(s.params().indexOf("123") == 0);
+		
+		s = new Select("mytable");
+		s.lte("id", "123");
+		assertEquals("SELECT * FROM \"mytable\" WHERE \"mytable\".\"id\" <= ?", s.build().sql());
+		assertTrue(s.params().indexOf("123") == 0);
+		
+		s = new Select("mytable");
+		s.gt("id", "123");
+		assertEquals("SELECT * FROM \"mytable\" WHERE \"mytable\".\"id\" > ?", s.build().sql());
+		assertTrue(s.params().indexOf("123") == 0);
+		
+		s = new Select("mytable");
+		s.gte("id", "123");
+		assertEquals("SELECT * FROM \"mytable\" WHERE \"mytable\".\"id\" >= ?", s.build().sql());
+		assertTrue(s.params().indexOf("123") == 0);
+		
 		// AND
-		s.where("name", "Evan");
-		assertEquals("SELECT * FROM \"mytable\" WHERE \"mytable\".\"id\" = ? AND \"mytable\".\"name\" = ?", s.build().sql());
+		s.eql("name", "Evan");
+		assertEquals("SELECT * FROM \"mytable\" WHERE \"mytable\".\"id\" >= ? AND \"mytable\".\"name\" = ?", s.build().sql());
 		assertTrue(s.params().indexOf("123") == 0);
 		assertTrue(s.params().indexOf("Evan") == 1);
 		
 		// OR
 		s = new Select("mytable");
-		s.where("id", "321").or().where("name", "Byrne");
+		s.eql("id", "321").or().eql("name", "Byrne");
 		assertEquals("SELECT * FROM \"mytable\" WHERE \"mytable\".\"id\" = ? OR \"mytable\".\"name\" = ?", s.build().sql());
 		assertTrue(s.params().indexOf("321") == 0);
 		assertTrue(s.params().indexOf("Byrne") == 1);
@@ -62,7 +87,7 @@ public class SqlSelect {
 		assertEquals("SELECT * FROM \"mytable\" LIMIT ?", s.build().sql());
 		assertTrue(s.params().indexOf("5") == 0);
 		
-		s.where("foo", "bar");
+		s.eql("foo", "bar");
 		assertEquals("SELECT * FROM \"mytable\" WHERE \"mytable\".\"foo\" = ? LIMIT ?", s.build().sql());
 		assertTrue(s.params().indexOf("bar") == 0);
 		assertTrue(s.params().indexOf("5") == 1);

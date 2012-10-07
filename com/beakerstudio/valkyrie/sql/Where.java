@@ -26,18 +26,95 @@ public abstract class Where extends Base {
 	}
 	
 	/**
-	 * Where
+	 * Add Where
+	 * @param String Type EX: =, !=, <, <=, or, ...
+	 * @param String Column
+	 * @param String Value
+	 */
+	protected void add_where(String type, String column, String value) {
+		
+		HashMap<String, String> w = new HashMap<String, String>();
+		w.put("type", type);
+		w.put("column", column);
+		w.put("value", value);
+		this.where_list.add(w);
+		
+	}
+	
+	/**
+	 * Equal
 	 * @param String Column
 	 * @param String Value
 	 * @return this
 	 */
-	public Where where(String column, String value) {
+	public Where eql(String column, String value) {
 		
-		HashMap<String, String> w = new HashMap<String, String>();
-		w.put("type", "where_equal");
-		w.put("column", column);
-		w.put("value", value);
-		this.where_list.add(w);
+		this.add_where("=", column, value);
+		return this;
+		
+	}
+	
+	/**
+	 * Not Equal
+	 * @param String Column
+	 * @param String Value
+	 * @return this
+	 */
+	public Where not(String column, String value) {
+		
+		this.add_where("<>", column, value);
+		return this;
+		
+	}
+	
+	/**
+	 * Less Than
+	 * @param String Column
+	 * @param String Value
+	 * @return this
+	 */
+	public Where lt(String column, String value) {
+		
+		this.add_where("<", column, value);
+		return this;
+		
+	}
+	
+	/**
+	 * Less Than or Equal
+	 * @param String Column
+	 * @param String Value
+	 * @return this
+	 */
+	public Where lte(String column, String value) {
+		
+		this.add_where("<=", column, value);
+		return this;
+		
+	}
+	
+	/**
+	 * Greater Than
+	 * @param String Column
+	 * @param String Value
+	 * @return this
+	 */
+	public Where gt(String column, String value) {
+		
+		this.add_where(">", column, value);
+		return this;
+		
+	}
+	
+	/**
+	 * Greater Than or Equal
+	 * @param String Column
+	 * @param String Value
+	 * @return this
+	 */
+	public Where gte(String column, String value) {
+		
+		this.add_where(">=", column, value);
 		return this;
 		
 	}
@@ -71,8 +148,12 @@ public abstract class Where extends Base {
 				
 				String type = w.get("type");
 				
-				// =
-				if(type.equals("where_equal")) {
+				// OR
+				if(type.equals("or")) {
+					
+					sql.add("OR");
+					
+				} else {
 					
 					// AND
 					if(previous != null && !previous.get("type").equals("or")) {
@@ -80,14 +161,9 @@ public abstract class Where extends Base {
 						sql.add("AND");
 						
 					}
-						
-					sql.add(String.format("\"%s\".\"%s\" = ?", this.table, w.get("column")));
+					
+					sql.add(String.format("\"%s\".\"%s\" %s ?", this.table, w.get("column"), type));
 					this.add_param(w.get("value"));
-					
-				// OR
-				} else if(type.equals("or")) {
-					
-					sql.add("OR");
 					
 				}
 				

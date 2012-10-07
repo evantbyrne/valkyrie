@@ -50,9 +50,59 @@ public class Select extends Where {
 	/**
 	 * {@inheritDoc}
 	 */
-	public Select where(String column, String value) {
+	public Select eql(String column, String value) {
 		
-		super.where(column, value);
+		super.eql(column, value);
+		return this;
+		
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Select not(String column, String value) {
+		
+		super.not(column, value);
+		return this;
+		
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Select lt(String column, String value) {
+		
+		super.lt(column, value);
+		return this;
+		
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Select lte(String column, String value) {
+		
+		super.lte(column, value);
+		return this;
+		
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Select gt(String column, String value) {
+		
+		super.gt(column, value);
+		return this;
+		
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Select gte(String column, String value) {
+		
+		super.gte(column, value);
 		return this;
 		
 	}

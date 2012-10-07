@@ -225,7 +225,7 @@ public abstract class Model {
 				Object value = klass.getDeclaredField(col).get(this);
 				if(value != null) {
 					
-					s.where(col, value.toString());
+					s.eql(col, value.toString());
 					
 				}
 				
@@ -284,7 +284,7 @@ public abstract class Model {
 				Object value = klass.getDeclaredField(col).get(this);
 				if(value != null) {
 					
-					d.where(col, value.toString());
+					d.eql(col, value.toString());
 					
 				}
 				
@@ -335,7 +335,7 @@ public abstract class Model {
 					// Primary key
 					if(col == primary_key) {
 						
-						u.where(col, value.toString());
+						u.eql(col, value.toString());
 					
 					// Value to be updated
 					} else {

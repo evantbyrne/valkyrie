@@ -111,20 +111,57 @@ public class Model {
 		res = f1.select().fetch();
 		assertEquals(2, res.size());
 		
-		res = f1.select().where("name", "Foo").fetch();
+		// =
+		res = f1.select().eql("name", "Foo").fetch();
 		assertEquals(1, res.size());
-		
-		res = f1.select().where("name", "Bob").fetch();
+		res = f1.select().eql("name", "Bob").fetch();
 		assertEquals(0, res.size());
 		
-		res = f1.select().where("name", "Bob").or().where("name", "Bar").fetch();
+		// or
+		res = f1.select().eql("name", "Bob").or().eql("name", "Bar").fetch();
 		assertEquals(1, res.size());
-		
-		res = f1.select().where("name", "Foo").or().where("name", "Bob").fetch();
+		res = f1.select().eql("name", "Foo").or().eql("name", "Bob").fetch();
 		assertEquals(1, res.size());
-		
-		res = f1.select().where("name", "Foo").or().where("name", "Bar").fetch();
+		res = f1.select().eql("name", "Foo").or().eql("name", "Bar").fetch();
 		assertEquals(2, res.size());
+		
+		// <>
+		res = f1.select().not("name", "Foo").fetch();
+		assertEquals(1, res.size());
+		res = f1.select().not("name", "Foo").not("name", "Bar").fetch();
+		assertEquals(0, res.size());
+		
+		// <
+		res = f1.select().lt("id", "1").fetch();
+		assertEquals(0, res.size());
+		res = f1.select().lt("id", "2").fetch();
+		assertEquals(1, res.size());
+		res = f1.select().lt("id", "3").fetch();
+		assertEquals(2, res.size());
+		
+		// <=
+		res = f1.select().lte("id", "1").fetch();
+		assertEquals(1, res.size());
+		res = f1.select().lte("id", "2").fetch();
+		assertEquals(2, res.size());
+		res = f1.select().lte("id", "3").fetch();
+		assertEquals(2, res.size());
+		
+		// >
+		res = f1.select().gt("id", "0").fetch();
+		assertEquals(2, res.size());
+		res = f1.select().gt("id", "1").fetch();
+		assertEquals(1, res.size());
+		res = f1.select().gt("id", "2").fetch();
+		assertEquals(0, res.size());
+		
+		// >=
+		res = f1.select().gte("id", "0").fetch();
+		assertEquals(2, res.size());
+		res = f1.select().gte("id", "1").fetch();
+		assertEquals(2, res.size());
+		res = f1.select().gte("id", "2").fetch();
+		assertEquals(1, res.size());
 		
 		f1.drop_table();
 		Connection.close();
