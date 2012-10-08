@@ -92,6 +92,12 @@ public class SqlSelect {
 		assertTrue(s.params().indexOf("bar") == 0);
 		assertTrue(s.params().indexOf("5") == 1);
 		
+		s.offset(10);
+		assertEquals("SELECT * FROM \"mytable\" WHERE \"mytable\".\"foo\" = ? LIMIT ? OFFSET ?", s.build().sql());
+		assertTrue(s.params().indexOf("bar") == 0);
+		assertTrue(s.params().indexOf("5") == 1);
+		assertTrue(s.params().indexOf("10") == 2);
+		
 	}
 
 }

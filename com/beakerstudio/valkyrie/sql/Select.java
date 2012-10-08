@@ -26,6 +26,11 @@ public class Select extends Where {
 	protected Integer limit;
 	
 	/**
+	 * Offset
+	 */
+	protected Integer offset;
+	
+	/**
 	 * {@inheritDoc}
 	 */
 	public Select(String table) {
@@ -44,6 +49,7 @@ public class Select extends Where {
 		super(table);
 		this.klass = klass;
 		this.limit = null;
+		this.offset = null;
 		
 	}
 	
@@ -130,6 +136,18 @@ public class Select extends Where {
 	}
 	
 	/**
+	 * Offset
+	 * @param int
+	 * @return this
+	 */
+	public Select offset(int n) {
+		
+		this.offset = n;
+		return this;
+		
+	}
+	
+	/**
 	 * Build
 	 * @return this
 	 */
@@ -152,6 +170,14 @@ public class Select extends Where {
 			
 			sql.add("LIMIT ?");
 			this.add_param(this.limit.toString());
+			
+			// Offset
+			if(this.offset != null) {
+				
+				sql.add("OFFSET ?");
+				this.add_param(this.offset.toString());
+				
+			}
 			
 		}
 		
