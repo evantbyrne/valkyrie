@@ -73,6 +73,21 @@ public class SqlSelect {
 	}
 	
 	/**
+	 * Test Order
+	 */
+	@Test
+	public void test_order() {
+		
+		Select s = new Select("mytable");
+		s.order_asc("foo");
+		assertEquals("SELECT * FROM \"mytable\" ORDER BY \"foo\" ASC", s.build().sql());
+		
+		s.order_desc("bar");
+		assertEquals("SELECT * FROM \"mytable\" ORDER BY \"foo\" ASC, \"bar\" DESC", s.build().sql());
+		
+	}
+	
+	/**
 	 * Test Limit
 	 */
 	@Test

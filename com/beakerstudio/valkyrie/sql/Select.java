@@ -31,6 +31,11 @@ public class Select extends Where {
 	protected Integer offset;
 	
 	/**
+	 * Order List
+	 */
+	protected Vector<String[]> order_list;
+	
+	/**
 	 * {@inheritDoc}
 	 */
 	public Select(String table) {
@@ -48,6 +53,7 @@ public class Select extends Where {
 		
 		super(table);
 		this.klass = klass;
+		this.order_list = new Vector<String[]>();
 		this.limit = null;
 		this.offset = null;
 		
@@ -148,6 +154,30 @@ public class Select extends Where {
 	}
 	
 	/**
+	 * Order Ascending
+	 * @param String Column
+	 * @return this
+	 */
+	public Select order_asc(String column) {
+		
+		this.order_list.add(new String[] {"ASC", column});
+		return this;
+		
+	}
+	
+	/**
+	 * Order Descending
+	 * @param String Column
+	 * @return this
+	 */
+	public Select order_desc(String column) {
+		
+		this.order_list.add(new String[] {"DESC", column});
+		return this;
+		
+	}
+	
+	/**
 	 * Build
 	 * @return this
 	 */
@@ -163,6 +193,22 @@ public class Select extends Where {
 		
 			sql.add(where);
 		
+		}
+		
+		// Order
+		if(this.order_list.size() > 0) {
+			
+			sql.add("ORDER BY");
+			Vector<String> order_sql = new Vector<String>();
+			
+			for(String[] o : this.order_list) {
+				
+				order_sql.add(String.format("\"%s\" %s", o[1], o[0]));
+				
+			}
+			
+			sql.add(Util.join(order_sql.toArray(), ", "));
+			
 		}
 		
 		// Limit

@@ -108,6 +108,7 @@ public class Model {
 		f1.name = "Bar";
 		f1.insert();
 		
+		// All
 		res = f1.select().fetch();
 		assertEquals(2, res.size());
 		
@@ -162,6 +163,17 @@ public class Model {
 		assertEquals(2, res.size());
 		res = f1.select().gte("id", "2").fetch();
 		assertEquals(1, res.size());
+		
+		// Order
+		res = f1.select().order_asc("name").fetch();
+		assertEquals(2, res.size());
+		assertEquals("Bar", res.firstElement().name);
+		res = f1.select().order_desc("name").fetch();
+		assertEquals(2, res.size());
+		assertEquals("Foo", res.firstElement().name);
+		res = f1.select().order_asc("name").order_desc("id").fetch();
+		assertEquals(2, res.size());
+		assertEquals("Bar", res.firstElement().name);
 		
 		f1.drop_table();
 		Connection.close();
