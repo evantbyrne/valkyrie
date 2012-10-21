@@ -10,5 +10,6 @@ import java.lang.annotation.*;
 public @interface Column {
 	
 	boolean primary() default false;
+	String type() default "";
 	
 }

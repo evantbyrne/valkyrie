@@ -76,12 +76,28 @@ public abstract class Model {
 					
 					// Integer
 					if(t.equals("Integer")) {
+						
 						add_column(klass, new IntegerColumn(f.getName()));
 						
 					// String
 					} else if(t.equals("String")) {
 						
 						add_column(klass, new TextColumn(f.getName()));
+					
+					// Foreign Key
+					} else if(t.equals("ForeignKey")) {
+						
+						add_column(klass, new IntegerColumn(f.getName()));
+						
+						try {
+							
+							Class <?> ft = f.getType();
+							f.set(this, ft.newInstance());
+					
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 						
 					}
 					

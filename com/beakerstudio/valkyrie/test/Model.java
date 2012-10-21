@@ -7,8 +7,11 @@ import org.junit.Test;
 
 import com.almworks.sqlite4java.SQLiteException;
 import com.beakerstudio.valkyrie.Connection;
+import com.beakerstudio.valkyrie.ForeignKey;
 import com.beakerstudio.valkyrie.sql.TextColumn;
 import com.beakerstudio.valkyrie.sql.IntegerColumn;
+import com.beakerstudio.valkyrie.test.models.Article;
+import com.beakerstudio.valkyrie.test.models.Category;
 import com.beakerstudio.valkyrie.test.models.Foo;
 import com.beakerstudio.valkyrie.test.models.FooBar;
 
@@ -204,6 +207,36 @@ public class Model {
 		assertEquals("Bob", f2.name);
 		
 		f1.drop_table();
+		Connection.close();
+		
+	}
+	
+	/**
+	 * Test Foreign Key
+	 * @throws Exception
+	 */
+	@Test
+	public void test_foreign_key() throws Exception {
+		
+		Connection.open("testdb");
+		
+		Category c = new Category();
+		c.create_table();
+		c.id = 123;
+		c.name = "Awesome Category";
+		c.insert();
+		
+		Article a = new Article();
+		a.create_table();
+		a.id = 321;
+		a.name = "Sweet Article";
+		a.category.set(c);
+		
+		Category c2 = a.category.get();
+		assertEquals("Awesome Category", c2.name);
+		
+		a.drop_table();
+		c.drop_table();
 		Connection.close();
 		
 	}
