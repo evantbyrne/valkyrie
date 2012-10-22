@@ -61,21 +61,45 @@ public abstract class Model {
 	 */
 	public Model() {
 		
-		// Populate columns once
 		Class<?> klass = this.getClass();
-		if(!columns.containsKey(klass)) {
-			
+		
+		// Populate schema?
+		boolean build_schema = (!columns.containsKey(klass));
+		if(build_schema) {
+		
 			columns.put(klass, new LinkedHashMap<String, Column>());
-			for(Field f : klass.getDeclaredFields()) {
+		
+		}
+			
+		for(Field f : klass.getDeclaredFields()) {
+			
+			if(f.isAnnotationPresent(com.beakerstudio.valkyrie.Column.class)) {
 				
-				if(f.isAnnotationPresent(com.beakerstudio.valkyrie.Column.class)) {
+				com.beakerstudio.valkyrie.Column annotation = f.getAnnotation(com.beakerstudio.valkyrie.Column.class);
+				String t = f.getType().getSimpleName();
+				
+				// Populate foreign keys
+				if(t.equals("ForeignKey")) {
 					
-					com.beakerstudio.valkyrie.Column annotation = f.getAnnotation(com.beakerstudio.valkyrie.Column.class);
-					String t = f.getType().getSimpleName();
+					add_column(klass, new IntegerColumn(f.getName()));
 					
+					try {
+						
+						Class <?> ft = f.getType();
+						f.set(this, ft.newInstance());
+				
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					
+				}
+				
+				// Populate schema?
+				if(build_schema) {
+				
 					// Integer
-					if(t.equals("Integer")) {
+					if(t.equals("Integer") || t.equals("ForeignKey")) {
 						
 						add_column(klass, new IntegerColumn(f.getName()));
 						
@@ -83,21 +107,6 @@ public abstract class Model {
 					} else if(t.equals("String")) {
 						
 						add_column(klass, new TextColumn(f.getName()));
-					
-					// Foreign Key
-					} else if(t.equals("ForeignKey")) {
-						
-						add_column(klass, new IntegerColumn(f.getName()));
-						
-						try {
-							
-							Class <?> ft = f.getType();
-							f.set(this, ft.newInstance());
-					
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
 						
 					}
 					
@@ -108,7 +117,7 @@ public abstract class Model {
 						primary_keys.put(klass, f.getName());
 						
 					}
-					
+				
 				}
 				
 			}
@@ -365,10 +374,27 @@ public abstract class Model {
 			
 			try {
 				
-				Object value = klass.getDeclaredField(col).get(this);
-				if(value != null) {
+				Field f = klass.getDeclaredField(col);
+				
+				// Foreign keys
+				if(f.getType().getSimpleName().equals("ForeignKey")) {
+				
+					ForeignKey<?> value = (ForeignKey<?>) f.get(this);
+					if(value != null && value.belongs_to != null) {
+						
+						d.eql(col, value.belongs_to.get_pk().toString());
+						
+					}
 					
-					d.eql(col, value.toString());
+				// Other columns
+				} else {
+					
+					Object value = f.get(this);
+					if(value != null) {
+						
+						d.eql(col, value.toString());
+						
+					}
 					
 				}
 				

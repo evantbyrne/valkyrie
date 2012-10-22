@@ -245,6 +245,16 @@ public class Model {
 		assertEquals(new Integer(123), c2.id);
 		assertEquals("Awesome Category", c2.name);
 		
+		// Delete
+		Article a3 = new Article();
+		a3.category.set(c);
+		a3.delete();
+		Article a4 = new Article();
+		a4.id = 321;
+		a4.get();
+		assertEquals(null, a4.name);
+		assertEquals(null, a4.category.belongs_to);
+		
 		a.drop_table();
 		c.drop_table();
 		Connection.close();
