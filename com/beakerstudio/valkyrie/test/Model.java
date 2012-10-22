@@ -226,6 +226,11 @@ public class Model {
 		c.name = "Awesome Category";
 		c.insert();
 		
+		Category c2 = new Category();
+		c2.id = 789;
+		c2.name = "Way Cool Category";
+		c2.insert();
+		
 		// Insert
 		Article a = new Article();
 		a.create_table();
@@ -241,19 +246,31 @@ public class Model {
 		a2.get();
 		assertEquals(c.id, a2.category.belongs_to.id);
 		assertEquals("Sweet Article", a2.name);
-		Category c2 = a2.category.get();
-		assertEquals(new Integer(123), c2.id);
-		assertEquals("Awesome Category", c2.name);
+		Category c3 = a2.category.get();
+		assertEquals(new Integer(123), c3.id);
+		assertEquals("Awesome Category", c3.name);
 		
-		// Delete
+		// Update
 		Article a3 = new Article();
-		a3.category.set(c);
-		a3.delete();
+		a3.id = 321;
+		a3.category.set(c2);
+		a3.save();
 		Article a4 = new Article();
 		a4.id = 321;
 		a4.get();
-		assertEquals(null, a4.name);
-		assertEquals(null, a4.category.belongs_to);
+		Category c4 = a4.category.get();
+		assertEquals(new Integer(789), c4.id);
+		assertEquals("Way Cool Category", c4.name);
+		
+		// Delete
+		Article a5 = new Article();
+		a5.category.set(c2);
+		a5.delete();
+		Article a6 = new Article();
+		a6.id = 321;
+		a6.get();
+		assertEquals(null, a6.name);
+		assertEquals(null, a6.category.belongs_to);
 		
 		a.drop_table();
 		c.drop_table();

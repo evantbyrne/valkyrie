@@ -439,22 +439,45 @@ public abstract class Model {
 			
 			try {
 				
-				Object value = klass.getDeclaredField(col).get(this);
-				if(value != null) {
+				Field f = klass.getDeclaredField(col);
+				
+				// Primary key
+				if(col == primary_key) {
 					
-					// Primary key
-					if(col == primary_key) {
-						
+					Object value = f.get(this);
+					if(value != null) {
+					
 						u.eql(col, value.toString());
+						
+					}
+				
+				// Value to be updated
+				} else {
+				
+					// Foreign keys
+					if(f.getType().getSimpleName().equals("ForeignKey")) {
 					
-					// Value to be updated
+						ForeignKey<?> value = (ForeignKey<?>) f.get(this);
+						if(value != null && value.belongs_to != null) {
+							
+							u.set(col, value.belongs_to.get_pk().toString());
+							
+						}
+						
+					// Other columns
 					} else {
-					
-						u.set(col, value.toString());
+						
+						Object value = f.get(this);
+						if(value != null) {
+							
+							u.set(col, value.toString());
+							
+						}
 						
 					}
 					
-				}
+				}	
+				
 				
 			} catch (IllegalArgumentException e) {
 				// TODO Auto-generated catch block
