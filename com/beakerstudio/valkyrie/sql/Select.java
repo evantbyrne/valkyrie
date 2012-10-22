@@ -6,6 +6,7 @@ import java.util.Vector;
 import com.almworks.sqlite4java.SQLiteException;
 import com.almworks.sqlite4java.SQLiteStatement;
 import com.beakerstudio.valkyrie.Connection;
+import com.beakerstudio.valkyrie.ForeignKey;
 import com.beakerstudio.valkyrie.Model;
 import com.beakerstudio.valkyrie.Util;
 
@@ -238,7 +239,7 @@ public class Select extends Where {
 	 * @throws Exception 
 	 * @throws SQLiteException 
 	 */
-	public <T> Vector<T> fetch() throws SQLiteException, Exception {
+	public <T, T2> Vector<T> fetch() throws SQLiteException, Exception {
 		
 		this.build();
 		SQLiteStatement st = Connection.get().prepare(this.sql(), this.params());
@@ -260,7 +261,25 @@ public class Select extends Where {
 					// Integer
 					if(col_type.equals("IntegerColumn")) {
 						
-						col_field.set(m, new Integer(st.columnInt(i)));
+						// Foreign Key
+						if(col_field.getType().getSimpleName().equals("ForeignKey")) {
+							
+							// Get model class instance for foreign key
+							String fk_type_name = col_field.getAnnotation(com.beakerstudio.valkyrie.Column.class).type();
+							Model fk_model = (Model) Class.forName(fk_type_name).newInstance();
+							fk_model.set_pk(new Integer(st.columnInt(i)));
+							
+							// Create foreign key instance
+							ForeignKey<?> fk = (ForeignKey<?>) col_field.getType().newInstance();
+							fk.set(fk_model);
+							col_field.set(m, fk);
+						
+						// Regular Integer Columns
+						} else {
+						
+							col_field.set(m, new Integer(st.columnInt(i)));
+							
+						}
 						
 					// Text
 					} else if(col_type.equals("TextColumn")) {

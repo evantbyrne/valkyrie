@@ -1,7 +1,5 @@
 package com.beakerstudio.valkyrie;
 
-import java.lang.reflect.ParameterizedType;
-
 import com.almworks.sqlite4java.SQLiteException;
 
 /**
@@ -14,7 +12,7 @@ public class ForeignKey <T extends Model> {
 	/**
 	 * <T> Foreign key model instance
 	 */
-	protected T belongs_to;
+	public T belongs_to;
 	
 	/**
 	 * Constructor
@@ -44,6 +42,18 @@ public class ForeignKey <T extends Model> {
 	public ForeignKey<T> set(T belongs_to) {
 		
 		this.belongs_to = belongs_to;
+		return this;
+		
+	}
+	
+	/**
+	 * Set
+	 * @param Object Foreign key model instance
+	 * @return this
+	 */
+	public ForeignKey<T> set(Object belongs_to) {
+		
+		this.belongs_to = (T) belongs_to;
 		return this;
 		
 	}

@@ -226,13 +226,23 @@ public class Model {
 		c.name = "Awesome Category";
 		c.insert();
 		
+		// Insert
 		Article a = new Article();
 		a.create_table();
 		a.id = 321;
 		a.name = "Sweet Article";
 		a.category.set(c);
+		assertEquals(c.id, a.category.belongs_to.id);
+		a.insert();
 		
-		Category c2 = a.category.get();
+		// Select
+		Article a2 = new Article();
+		a2.id = 321;
+		a2.get();
+		assertEquals(c.id, a2.category.belongs_to.id);
+		assertEquals("Sweet Article", a2.name);
+		Category c2 = a2.category.get();
+		assertEquals(new Integer(123), c2.id);
 		assertEquals("Awesome Category", c2.name);
 		
 		a.drop_table();

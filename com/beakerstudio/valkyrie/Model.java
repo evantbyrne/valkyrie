@@ -165,6 +165,40 @@ public abstract class Model {
 	}
 	
 	/**
+	 * Get Value of Primary Key
+	 * @return String Name of primary key column
+	 * @throws NoSuchFieldException
+	 * @throws IllegalAccessException
+	 * @throws SecurityException
+	 * @throws IllegalArgumentException
+	 */
+	public Object get_pk() throws Exception {
+		
+		Class<?> klass = this.getClass();
+		return klass.getField(primary_keys.get(klass)).get(this);
+		
+	}
+	
+	/**
+	 * Set Value of Primary Key
+	 * @param Object Value
+	 * @return String Name of primary key column
+	 * @throws NoSuchFieldException
+	 * @throws IllegalAccessException
+	 * @throws SecurityException
+	 * @throws IllegalArgumentException
+	 * @return this
+	 */
+	public Model set_pk(Object value) throws Exception {
+		
+		Class<?> klass = this.getClass();
+		klass.getField(primary_keys.get(klass)).set(this, value);
+		
+		return this;
+		
+	}
+	
+	/**
 	 * Insert
 	 * @return this
 	 * @throws Exception 
@@ -180,10 +214,27 @@ public abstract class Model {
 			
 			try {
 				
-				Object value = klass.getDeclaredField(col).get(this);
-				if(value != null) {
+				Field f = klass.getDeclaredField(col);
+				
+				// Foreign keys
+				if(f.getType().getSimpleName().equals("ForeignKey")) {
+				
+					ForeignKey<?> value = (ForeignKey<?>) f.get(this);
+					if(value.belongs_to != null) {
+						
+						ins.set(col, value.belongs_to.get_pk().toString());
+						
+					}
 					
-					ins.set(col, value.toString());
+				// Other columns
+				} else {
+					
+					Object value = f.get(this);
+					if(value != null) {
+						
+						ins.set(col, value.toString());
+						
+					}
 					
 				}
 				
@@ -238,10 +289,27 @@ public abstract class Model {
 			
 			try {
 				
-				Object value = klass.getDeclaredField(col).get(this);
-				if(value != null) {
+				Field f = klass.getDeclaredField(col);
+				
+				// Foreign keys
+				if(f.getType().getSimpleName().equals("ForeignKey")) {
+				
+					ForeignKey<?> value = (ForeignKey<?>) f.get(this);
+					if(value != null && value.belongs_to != null) {
+						
+						s.eql(col, value.belongs_to.toString());
+						
+					}
 					
-					s.eql(col, value.toString());
+				// Other columns
+				} else {
+					
+					Object value = f.get(this);
+					if(value != null) {
+						
+						s.eql(col, value.toString());
+						
+					}
 					
 				}
 				
