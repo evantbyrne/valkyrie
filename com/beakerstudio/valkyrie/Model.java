@@ -229,9 +229,9 @@ public abstract class Model {
 				if(f.getType().getSimpleName().equals("ForeignKey")) {
 				
 					ForeignKey<?> value = (ForeignKey<?>) f.get(this);
-					if(value.belongs_to != null) {
+					if(value.model != null) {
 						
-						ins.set(col, value.belongs_to.get_pk().toString());
+						ins.set(col, value.model.get_pk().toString());
 						
 					}
 					
@@ -304,9 +304,9 @@ public abstract class Model {
 				if(f.getType().getSimpleName().equals("ForeignKey")) {
 				
 					ForeignKey<?> value = (ForeignKey<?>) f.get(this);
-					if(value != null && value.belongs_to != null) {
+					if(value != null && value.model != null) {
 						
-						s.eql(col, value.belongs_to.toString());
+						s.eql(col, value.model.toString());
 						
 					}
 					
@@ -380,9 +380,9 @@ public abstract class Model {
 				if(f.getType().getSimpleName().equals("ForeignKey")) {
 				
 					ForeignKey<?> value = (ForeignKey<?>) f.get(this);
-					if(value != null && value.belongs_to != null) {
+					if(value != null && value.model != null) {
 						
-						d.eql(col, value.belongs_to.get_pk().toString());
+						d.eql(col, value.model.get_pk().toString());
 						
 					}
 					
@@ -458,9 +458,9 @@ public abstract class Model {
 					if(f.getType().getSimpleName().equals("ForeignKey")) {
 					
 						ForeignKey<?> value = (ForeignKey<?>) f.get(this);
-						if(value != null && value.belongs_to != null) {
+						if(value != null && value.model != null) {
 							
-							u.set(col, value.belongs_to.get_pk().toString());
+							u.set(col, value.model.get_pk().toString());
 							
 						}
 						

@@ -12,16 +12,16 @@ public class ForeignKey <T extends Model> {
 	/**
 	 * <T> Foreign key model instance
 	 */
-	public T belongs_to;
+	public T model;
 	
 	/**
 	 * Constructor
 	 * @param <T> Foreign key model instance
 	 * @param Integer Primary key
 	 */
-	public ForeignKey(T belongs_to) {
+	public ForeignKey(T model) {
 		
-		this.set(belongs_to);
+		this.set(model);
 		
 	}
 	
@@ -39,9 +39,9 @@ public class ForeignKey <T extends Model> {
 	 * @param <T> Foreign key model instance
 	 * @return this
 	 */
-	public ForeignKey<T> set(T belongs_to) {
+	public ForeignKey<T> set(T model) {
 		
-		this.belongs_to = belongs_to;
+		this.model = model;
 		return this;
 		
 	}
@@ -51,9 +51,9 @@ public class ForeignKey <T extends Model> {
 	 * @param Object Foreign key model instance
 	 * @return this
 	 */
-	public ForeignKey<T> set(Object belongs_to) {
+	public ForeignKey<T> set(Object model) {
 		
-		this.belongs_to = (T) belongs_to;
+		this.model = (T) model;
 		return this;
 		
 	}
@@ -66,8 +66,8 @@ public class ForeignKey <T extends Model> {
 	 */
 	public T get() throws SQLiteException, Exception {
         
-        this.belongs_to.get();
-		return this.belongs_to;
+        this.model.get();
+		return this.model;
 		
 	}
 

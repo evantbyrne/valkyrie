@@ -237,14 +237,14 @@ public class Model {
 		a.id = 321;
 		a.name = "Sweet Article";
 		a.category.set(c);
-		assertEquals(c.id, a.category.belongs_to.id);
+		assertEquals(c.id, a.category.model.id);
 		a.insert();
 		
 		// Select
 		Article a2 = new Article();
 		a2.id = 321;
 		a2.get();
-		assertEquals(c.id, a2.category.belongs_to.id);
+		assertEquals(c.id, a2.category.model.id);
 		assertEquals("Sweet Article", a2.name);
 		Category c3 = a2.category.get();
 		assertEquals(new Integer(123), c3.id);
@@ -270,7 +270,7 @@ public class Model {
 		a6.id = 321;
 		a6.get();
 		assertEquals(null, a6.name);
-		assertEquals(null, a6.category.belongs_to);
+		assertEquals(null, a6.category.model);
 		
 		a.drop_table();
 		c.drop_table();
