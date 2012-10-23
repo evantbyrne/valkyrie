@@ -7,7 +7,6 @@ import org.junit.Test;
 
 import com.almworks.sqlite4java.SQLiteException;
 import com.beakerstudio.valkyrie.Connection;
-import com.beakerstudio.valkyrie.ForeignKey;
 import com.beakerstudio.valkyrie.sql.TextColumn;
 import com.beakerstudio.valkyrie.sql.IntegerColumn;
 import com.beakerstudio.valkyrie.test.models.Article;
@@ -271,6 +270,47 @@ public class Model {
 		a6.get();
 		assertEquals(null, a6.name);
 		assertEquals(null, a6.category.model);
+		
+		a.drop_table();
+		c.drop_table();
+		Connection.close();
+		
+	}
+	
+	/**
+	 * Test Has Many
+	 * @throws Exception
+	 */
+	@Test
+	public void test_has_many() throws Exception {
+		
+		Connection.open("testdb");
+		
+		Category c = new Category();
+		c.create_table();
+		c.id = 123;
+		c.name = "Awesome Category";
+		c.insert();
+		
+		Article a = new Article();
+		a.create_table();
+		a.id = 321;
+		a.name = "Sweet Article";
+		a.category.set(c);
+		a.insert();
+		
+		Article a2 = new Article();
+		a2.id = 987;
+		a2.name = "Quixotic Article";
+		a2.insert();
+		
+		// Select
+		Vector<Article> articles = c.articles.select().fetch();
+		assertEquals(1, articles.size());
+		Article a3 = articles.firstElement();
+		assertEquals(new Integer(321), a3.id);
+		assertEquals("Sweet Article", a3.name);
+		assertEquals(new Integer(123), a3.category.model.id);
 		
 		a.drop_table();
 		c.drop_table();

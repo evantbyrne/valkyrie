@@ -78,10 +78,8 @@ public abstract class Model {
 				com.beakerstudio.valkyrie.Column annotation = f.getAnnotation(com.beakerstudio.valkyrie.Column.class);
 				String t = f.getType().getSimpleName();
 				
-				// Populate foreign keys
+				// Instantiate foreign keys
 				if(t.equals("ForeignKey")) {
-					
-					add_column(klass, new IntegerColumn(f.getName()));
 					
 					try {
 						
@@ -92,7 +90,23 @@ public abstract class Model {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+				
+				} else if(t.equals("HasMany")) {
 					
+					try {
+						
+						Class <?> ft = f.getType();
+						HasMany<?> hm = (HasMany<?>) ft.newInstance();
+						hm.set_child_model((Model) Class.forName(annotation.type()).newInstance());
+						hm.set_parent_model(this);
+						hm.set_field_name(annotation.field());
+						f.set(this, hm);
+				
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				
 				}
 				
 				// Populate schema?
