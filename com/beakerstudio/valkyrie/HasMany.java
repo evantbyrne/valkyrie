@@ -104,5 +104,24 @@ public class HasMany <T extends Model> {
 		return s;
 		
 	}
+	
+	/**
+	 * Delete
+	 * @return <T> Model
+	 * @throws Exception
+	 */
+	public HasMany<T> delete(T model) throws Exception {
+		
+		// Get foreign key field
+		Field fk = model.getClass().getField(this.field_name);
+		ForeignKey<?> fk_field = (ForeignKey<?>) fk.get(model);
+		
+		// Set parent model on foreign key
+		fk_field.getClass().getField("model").set(fk_field, this.parent_model);
+		
+		model.delete();
+		return this;
+		
+	}
 
 }

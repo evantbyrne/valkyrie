@@ -315,11 +315,19 @@ public class Model {
 		// Insert
 		Article a4 = new Article();
 		a4.id = 654;
-		a4.name = "Fantastic Article";
-		
+		a4.name = "Quixotic Article";
 		c.articles.insert(a4);
+		
 		Vector<Article> articles2 = c.articles.select().fetch();
 		assertEquals(2, articles2.size());
+		
+		// Delete
+		Article a5 = new Article();
+		a5.name = "Quixotic Article";
+		c.articles.delete(a5);
+		
+		assertEquals(0, c.articles.select().eql("id", "654").fetch().size());
+		assertEquals(1, a2.select().eql("id", "987").fetch().size());
 		
 		a.drop_table();
 		c.drop_table();
