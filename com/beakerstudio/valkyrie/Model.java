@@ -203,6 +203,17 @@ public abstract class Model {
 	}
 	
 	/**
+	 * Get Name of Primary Key Column
+	 * @return String
+	 */
+	public String get_pk_name() {
+		
+		Class<?> klass = this.getClass();
+		return primary_keys.get(klass);
+		
+	}
+	
+	/**
 	 * Set Value of Primary Key
 	 * @param Object Value
 	 * @return String Name of primary key column

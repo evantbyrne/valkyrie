@@ -312,6 +312,15 @@ public class Model {
 		assertEquals("Sweet Article", a3.name);
 		assertEquals(new Integer(123), a3.category.model.id);
 		
+		// Insert
+		Article a4 = new Article();
+		a4.id = 654;
+		a4.name = "Fantastic Article";
+		
+		c.articles.insert(a4);
+		Vector<Article> articles2 = c.articles.select().fetch();
+		assertEquals(2, articles2.size());
+		
 		a.drop_table();
 		c.drop_table();
 		Connection.close();

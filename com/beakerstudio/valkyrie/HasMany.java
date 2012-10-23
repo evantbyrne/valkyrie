@@ -1,5 +1,7 @@
 package com.beakerstudio.valkyrie;
 
+import java.lang.reflect.Field;
+
 import com.beakerstudio.valkyrie.sql.Select;
 
 /**
@@ -67,6 +69,25 @@ public class HasMany <T extends Model> {
 	public HasMany<T> set_parent_model(Model parent_model) {
 		
 		this.parent_model = parent_model;
+		return this;
+		
+	}
+	
+	/**
+	 * Insert
+	 * @return <T> Model to be inserted
+	 * @throws Exception
+	 */
+	public HasMany<T> insert(T model) throws Exception {
+		
+		// Get foreign key field
+		Field fk = model.getClass().getField(this.field_name);
+		ForeignKey<?> fk_field = (ForeignKey<?>) fk.get(model);
+		
+		// Set parent model on foreign key
+		fk_field.getClass().getField("model").set(fk_field, this.parent_model);
+		
+		model.insert();
 		return this;
 		
 	}
