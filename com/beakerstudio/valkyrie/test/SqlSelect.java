@@ -82,6 +82,12 @@ public class SqlSelect {
 		assertTrue(s.params().indexOf("321") == 0);
 		assertTrue(s.params().indexOf("Byrne") == 1);
 		
+		// Specify table
+		s = new Select("mytable");
+		s.eql("foo.bar", "baz");
+		assertEquals("SELECT \"mytable\".* FROM \"mytable\" WHERE \"foo\".\"bar\" = ?", s.build().sql());
+		assertTrue(s.params().indexOf("baz") == 0);
+		
 	}
 	
 	/**

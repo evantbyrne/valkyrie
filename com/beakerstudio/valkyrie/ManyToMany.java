@@ -2,6 +2,8 @@ package com.beakerstudio.valkyrie;
 
 import java.lang.reflect.Field;
 
+import com.beakerstudio.valkyrie.sql.Select;
+
 /**
  * Many To Many
  * @author Evan Byrne
@@ -72,8 +74,8 @@ public class ManyToMany <T extends Model> {
 	}
 	
 	/**
-	 * Insert
-	 * @return <T> Model to be inserted
+	 * Add
+	 * @return <T> Model to be added
 	 * @throws Exception
 	 */
 	public ManyToMany<T> add(T model) throws Exception {
@@ -99,6 +101,26 @@ public class ManyToMany <T extends Model> {
 		
 		middleman.insert();
 		return this;
+		
+	}
+	
+	/**
+	 * Select
+	 * @return Select
+	 * @throws Exception
+	 */
+	public Select select() throws Exception {
+		
+		Model child_model = (Model) Class.forName(this.child_model_class).newInstance();
+		String child_name = child_model.getClass().getSimpleName().toLowerCase();
+		Select s = child_model.select().join(
+				this.middleman_model.getClass().getCanonicalName(),
+				child_name,
+				child_model.get_pk_name());
+		
+		return s.eql(
+				String.format("%s.%s", this.middleman_model.sqlite_table(), this.parent_model.getClass().getSimpleName().toLowerCase()),
+				this.parent_model.get_pk().toString());
 		
 	}
 

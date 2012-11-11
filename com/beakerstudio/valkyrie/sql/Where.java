@@ -162,7 +162,19 @@ public abstract class Where extends Base {
 						
 					}
 					
-					sql.add(String.format("\"%s\".\"%s\" %s ?", this.table, w.get("column"), type));
+					// Format column name
+					String column = w.get("column");
+					String table = this.table;
+					
+					if(column.indexOf('.') != -1) {
+						
+						String halves[] = column.split("\\.");
+						table = halves[0];
+						column = halves[1];
+						
+					}
+					
+					sql.add(String.format("\"%s\".\"%s\" %s ?", table, column, type));
 					this.add_param(w.get("value"));
 					
 				}

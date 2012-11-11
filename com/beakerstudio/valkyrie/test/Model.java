@@ -370,8 +370,15 @@ public class Model {
 		Vector<Group> groups1 = g1.select().join("com.beakerstudio.valkyrie.test.models.Membership", "group", "id").fetch();
 		assertEquals(1, groups1.size());
 		
+		assertEquals(1, u1.groups.select().fetch().size());
+		assertEquals(1, g1.users.select().fetch().size());
+		assertEquals(0, g2.users.select().fetch().size());
+		
 		g2.users.add(u1);
 		assertEquals(2, m1.select().fetch().size());
+		assertEquals(2, u1.groups.select().fetch().size());
+		assertEquals(1, g1.users.select().fetch().size());
+		assertEquals(1, g2.users.select().fetch().size());
 		
 		Vector<Group> groups2 = g1.select().join("com.beakerstudio.valkyrie.test.models.Membership", "group", "id").fetch();
 		assertEquals(2, groups2.size());
