@@ -75,7 +75,7 @@ public class ManyToMany <T extends Model> {
 	
 	/**
 	 * Add
-	 * @return <T> Model to be added
+	 * @return <T> Model to be added to many-to-many relationship
 	 * @throws Exception
 	 */
 	public ManyToMany<T> add(T model) throws Exception {
@@ -100,6 +100,37 @@ public class ManyToMany <T extends Model> {
 		
 		
 		middleman.insert();
+		return this;
+		
+	}
+	
+	/**
+	 * REmove
+	 * @return <T> Model to be removed from many-to-many relationship
+	 * @throws Exception
+	 */
+	public ManyToMany<T> remove(T model) throws Exception {
+		
+		Model middleman = this.middleman_model.getClass().newInstance();
+		
+		
+		// Get foreign key field for associated model
+		Field fk = middleman.getClass().getField(model.getClass().getSimpleName().toLowerCase());
+		ForeignKey<?> fk_field = (ForeignKey<?>) fk.get(middleman);
+		
+		// Set parent model on foreign key for associated model
+		fk_field.getClass().getField("model").set(fk_field, model);
+		
+		
+		// Get foreign key field for parent model
+		fk = middleman.getClass().getField(this.parent_model.getClass().getSimpleName().toLowerCase());
+		fk_field = (ForeignKey<?>) fk.get(middleman);
+		
+		// Set parent model on foreign key for parent model
+		fk_field.getClass().getField("model").set(fk_field, this.parent_model);
+		
+		
+		middleman.delete();
 		return this;
 		
 	}
