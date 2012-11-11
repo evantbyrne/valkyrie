@@ -22,6 +22,21 @@ public class Select extends Where {
 	protected Class<?> klass;
 	
 	/**
+	 * Join Model
+	 */
+	protected String join_model;
+	
+	/**
+	 * Join Column
+	 */
+	protected String join_column;
+	
+	/**
+	 * Join Local Column
+	 */
+	protected String join_local_column;
+	
+	/**
 	 * Limit
 	 */
 	protected Integer limit;
@@ -54,9 +69,27 @@ public class Select extends Where {
 		
 		super(table);
 		this.klass = klass;
+		this.join_model = null;
+		this.join_column = null;
+		this.join_local_column = null;
 		this.order_list = new Vector<String[]>();
 		this.limit = null;
 		this.offset = null;
+		
+	}
+	
+	/**
+	 * Join
+	 * @param String Table
+	 * @param String Column
+	 * @return this
+	 */
+	public Select join(String model, String column, String local_column) {
+		
+		this.join_model = model;
+		this.join_column = column;
+		this.join_local_column = local_column;
+		return this;
 		
 	}
 	
@@ -186,7 +219,28 @@ public class Select extends Where {
 		
 		this.reset_params();
 		Vector<String> sql = new Vector<String>();
-		sql.add(String.format("SELECT * FROM \"%s\"", this.table));
+		sql.add(String.format("SELECT \"%s\".* FROM \"%s\"", this.table, this.table));
+		
+		// Join
+		if(this.join_model != null) {
+			
+			try {
+				
+				Model m = (Model) Class.forName(this.join_model).newInstance();
+				String join_table = m.sqlite_table();
+				sql.add(String.format("JOIN \"%s\" ON \"%s\".\"%s\" = \"%s\".\"%s\"",
+						join_table,
+						this.table,
+						this.join_local_column,
+						join_table,
+						this.join_column));
+				
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
 		
 		// Where
 		String where = this.sql_for_where();
@@ -249,42 +303,53 @@ public class Select extends Where {
 			
 			while(st.step()) {
 				
-				T m = (T) this.klass.newInstance(); // TODO: Fix warning
+				T m = (T) this.klass.newInstance();
 				
 				// Populate model object
 				for(int i = 0; i < st.columnCount(); i++) {
 					
 					String col_name = st.getColumnName(i);
-					String col_type = Model.get_column(this.klass, col_name).getClass().getSimpleName();
+					Column col = Model.get_column(this.klass, col_name);
 					Field col_field = m.getClass().getField(col_name);
 					
-					// Integer
-					if(col_type.equals("IntegerColumn")) {
+					if(col != null) {
 						
-						// Foreign Key
-						if(col_field.getType().getSimpleName().equals("ForeignKey")) {
+						String col_type = col.getClass().getSimpleName();
+					
+						// Integer
+						if(col_type.equals("IntegerColumn")) {
 							
-							// Get model class instance for foreign key
-							String fk_type_name = col_field.getAnnotation(com.beakerstudio.valkyrie.Column.class).type();
-							Model fk_model = (Model) Class.forName(fk_type_name).newInstance();
-							fk_model.set_pk(new Integer(st.columnInt(i)));
+							// Foreign Key
+							if(col_field.getType().getSimpleName().equals("ForeignKey")) {
+								
+								// Get model class instance for foreign key
+								String fk_type_name = col_field.getAnnotation(com.beakerstudio.valkyrie.Column.class).type();
+								Model fk_model = (Model) Class.forName(fk_type_name).newInstance();
+								fk_model.set_pk(new Integer(st.columnInt(i)));
+								
+								// Create foreign key instance
+								ForeignKey<?> fk = (ForeignKey<?>) col_field.getType().newInstance();
+								fk.set(fk_model);
+								col_field.set(m, fk);
 							
-							// Create foreign key instance
-							ForeignKey<?> fk = (ForeignKey<?>) col_field.getType().newInstance();
-							fk.set(fk_model);
-							col_field.set(m, fk);
-						
-						// Regular Integer Columns
-						} else {
-						
-							col_field.set(m, new Integer(st.columnInt(i)));
+							// Regular Integer Columns
+							} else {
+							
+								col_field.set(m, new Integer(st.columnInt(i)));
+								
+							}
+							
+						// Text
+						} else if(col_type.equals("TextColumn")) {
+							
+							col_field.set(m, st.columnString(i));
 							
 						}
 						
-					// Text
-					} else if(col_type.equals("TextColumn")) {
+					} else {
 						
-						col_field.set(m, st.columnString(i));
+						// Just skip over it
+						st.columnString(i);
 						
 					}
 					

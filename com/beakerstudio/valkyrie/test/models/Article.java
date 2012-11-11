@@ -2,7 +2,7 @@ package com.beakerstudio.valkyrie.test.models;
 
 import com.beakerstudio.valkyrie.Column;
 import com.beakerstudio.valkyrie.Model;
-import com.beakerstudio.valkyrie.ForeignKey;;
+import com.beakerstudio.valkyrie.ForeignKey;
 
 /**
  * Article Test Model

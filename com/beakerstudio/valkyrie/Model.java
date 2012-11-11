@@ -107,6 +107,22 @@ public abstract class Model {
 						e.printStackTrace();
 					}
 				
+				} else if(t.equals("ManyToMany")) {
+					
+					try {
+						
+						Class <?> ft = f.getType();
+						ManyToMany<?> mm = (ManyToMany<?>) ft.newInstance();
+						mm.set_middleman_model((Model) Class.forName(annotation.middleman()).newInstance());
+						mm.set_child_model_class(annotation.type());
+						mm.set_parent_model(this);
+						f.set(this, mm);
+				
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				
 				}
 				
 				// Populate schema?

@@ -13,6 +13,9 @@ import com.beakerstudio.valkyrie.test.models.Article;
 import com.beakerstudio.valkyrie.test.models.Category;
 import com.beakerstudio.valkyrie.test.models.Foo;
 import com.beakerstudio.valkyrie.test.models.FooBar;
+import com.beakerstudio.valkyrie.test.models.Group;
+import com.beakerstudio.valkyrie.test.models.Membership;
+import com.beakerstudio.valkyrie.test.models.User;
 
 public class Model {
 
@@ -331,6 +334,51 @@ public class Model {
 		
 		a.drop_table();
 		c.drop_table();
+		Connection.close();
+		
+	}
+	
+	@Test
+	public void test_many_to_many() throws Exception {
+		
+		Connection.open("testdb");
+		
+		Membership m1 = new Membership();
+		m1.create_table();
+		
+		User u1 = new User();
+		u1.create_table();
+		u1.id = 1;
+		u1.first_name = "Evan";
+		u1.last_name = "Byrne";
+		u1.insert();
+		
+		Group g1 = new Group();
+		g1.create_table();
+		g1.id = 9;
+		g1.name = "Staff";
+		g1.insert();
+		
+		Group g2 = new Group();
+		g2.id = 8;
+		g2.name = "Awesome";
+		g2.insert();
+		
+		u1.groups.add(g1);
+		assertEquals(1, m1.select().fetch().size());
+		
+		Vector<Group> groups1 = g1.select().join("com.beakerstudio.valkyrie.test.models.Membership", "group", "id").fetch();
+		assertEquals(1, groups1.size());
+		
+		g2.users.add(u1);
+		assertEquals(2, m1.select().fetch().size());
+		
+		Vector<Group> groups2 = g1.select().join("com.beakerstudio.valkyrie.test.models.Membership", "group", "id").fetch();
+		assertEquals(2, groups2.size());
+		
+		u1.drop_table();
+		g1.drop_table();
+		m1.drop_table();
 		Connection.close();
 		
 	}

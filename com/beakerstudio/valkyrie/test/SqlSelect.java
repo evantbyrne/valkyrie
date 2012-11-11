@@ -17,7 +17,19 @@ public class SqlSelect {
 	public void test_all() {
 		
 		Select s = new Select("mytable");
-		assertEquals("SELECT * FROM \"mytable\"", s.build().sql());
+		assertEquals("SELECT \"mytable\".* FROM \"mytable\"", s.build().sql());
+		
+	}
+	
+	/**
+	 * Test Join
+	 */
+	@Test
+	public void test_join() {
+		
+		Select s = new Select("mytable");
+		s.join("com.beakerstudio.valkyrie.test.models.Article", "mytable_id", "id");
+		assertEquals("SELECT \"mytable\".* FROM \"mytable\" JOIN \"article\" ON \"mytable\".\"id\" = \"article\".\"mytable_id\"", s.build().sql());
 		
 	}
 	
@@ -29,44 +41,44 @@ public class SqlSelect {
 		
 		Select s = new Select("mytable");
 		s.eql("id", "123");
-		assertEquals("SELECT * FROM \"mytable\" WHERE \"mytable\".\"id\" = ?", s.build().sql());
+		assertEquals("SELECT \"mytable\".* FROM \"mytable\" WHERE \"mytable\".\"id\" = ?", s.build().sql());
 		assertTrue(s.params().indexOf("123") == 0);
 		
 		s = new Select("mytable");
 		s.not("id", "123");
-		assertEquals("SELECT * FROM \"mytable\" WHERE \"mytable\".\"id\" <> ?", s.build().sql());
+		assertEquals("SELECT \"mytable\".* FROM \"mytable\" WHERE \"mytable\".\"id\" <> ?", s.build().sql());
 		assertTrue(s.params().indexOf("123") == 0);
 		
 		s = new Select("mytable");
 		s.lt("id", "123");
-		assertEquals("SELECT * FROM \"mytable\" WHERE \"mytable\".\"id\" < ?", s.build().sql());
+		assertEquals("SELECT \"mytable\".* FROM \"mytable\" WHERE \"mytable\".\"id\" < ?", s.build().sql());
 		assertTrue(s.params().indexOf("123") == 0);
 		
 		s = new Select("mytable");
 		s.lte("id", "123");
-		assertEquals("SELECT * FROM \"mytable\" WHERE \"mytable\".\"id\" <= ?", s.build().sql());
+		assertEquals("SELECT \"mytable\".* FROM \"mytable\" WHERE \"mytable\".\"id\" <= ?", s.build().sql());
 		assertTrue(s.params().indexOf("123") == 0);
 		
 		s = new Select("mytable");
 		s.gt("id", "123");
-		assertEquals("SELECT * FROM \"mytable\" WHERE \"mytable\".\"id\" > ?", s.build().sql());
+		assertEquals("SELECT \"mytable\".* FROM \"mytable\" WHERE \"mytable\".\"id\" > ?", s.build().sql());
 		assertTrue(s.params().indexOf("123") == 0);
 		
 		s = new Select("mytable");
 		s.gte("id", "123");
-		assertEquals("SELECT * FROM \"mytable\" WHERE \"mytable\".\"id\" >= ?", s.build().sql());
+		assertEquals("SELECT \"mytable\".* FROM \"mytable\" WHERE \"mytable\".\"id\" >= ?", s.build().sql());
 		assertTrue(s.params().indexOf("123") == 0);
 		
 		// AND
 		s.eql("name", "Evan");
-		assertEquals("SELECT * FROM \"mytable\" WHERE \"mytable\".\"id\" >= ? AND \"mytable\".\"name\" = ?", s.build().sql());
+		assertEquals("SELECT \"mytable\".* FROM \"mytable\" WHERE \"mytable\".\"id\" >= ? AND \"mytable\".\"name\" = ?", s.build().sql());
 		assertTrue(s.params().indexOf("123") == 0);
 		assertTrue(s.params().indexOf("Evan") == 1);
 		
 		// OR
 		s = new Select("mytable");
 		s.eql("id", "321").or().eql("name", "Byrne");
-		assertEquals("SELECT * FROM \"mytable\" WHERE \"mytable\".\"id\" = ? OR \"mytable\".\"name\" = ?", s.build().sql());
+		assertEquals("SELECT \"mytable\".* FROM \"mytable\" WHERE \"mytable\".\"id\" = ? OR \"mytable\".\"name\" = ?", s.build().sql());
 		assertTrue(s.params().indexOf("321") == 0);
 		assertTrue(s.params().indexOf("Byrne") == 1);
 		
@@ -80,10 +92,10 @@ public class SqlSelect {
 		
 		Select s = new Select("mytable");
 		s.order_asc("foo");
-		assertEquals("SELECT * FROM \"mytable\" ORDER BY \"foo\" ASC", s.build().sql());
+		assertEquals("SELECT \"mytable\".* FROM \"mytable\" ORDER BY \"foo\" ASC", s.build().sql());
 		
 		s.order_desc("bar");
-		assertEquals("SELECT * FROM \"mytable\" ORDER BY \"foo\" ASC, \"bar\" DESC", s.build().sql());
+		assertEquals("SELECT \"mytable\".* FROM \"mytable\" ORDER BY \"foo\" ASC, \"bar\" DESC", s.build().sql());
 		
 	}
 	
@@ -95,20 +107,20 @@ public class SqlSelect {
 		
 		Select s = new Select("mytable");
 		s.limit(1);
-		assertEquals("SELECT * FROM \"mytable\" LIMIT ?", s.build().sql());
+		assertEquals("SELECT \"mytable\".* FROM \"mytable\" LIMIT ?", s.build().sql());
 		assertTrue(s.params().indexOf("1") == 0);
 		
 		s.limit(5);
-		assertEquals("SELECT * FROM \"mytable\" LIMIT ?", s.build().sql());
+		assertEquals("SELECT \"mytable\".* FROM \"mytable\" LIMIT ?", s.build().sql());
 		assertTrue(s.params().indexOf("5") == 0);
 		
 		s.eql("foo", "bar");
-		assertEquals("SELECT * FROM \"mytable\" WHERE \"mytable\".\"foo\" = ? LIMIT ?", s.build().sql());
+		assertEquals("SELECT \"mytable\".* FROM \"mytable\" WHERE \"mytable\".\"foo\" = ? LIMIT ?", s.build().sql());
 		assertTrue(s.params().indexOf("bar") == 0);
 		assertTrue(s.params().indexOf("5") == 1);
 		
 		s.offset(10);
-		assertEquals("SELECT * FROM \"mytable\" WHERE \"mytable\".\"foo\" = ? LIMIT ? OFFSET ?", s.build().sql());
+		assertEquals("SELECT \"mytable\".* FROM \"mytable\" WHERE \"mytable\".\"foo\" = ? LIMIT ? OFFSET ?", s.build().sql());
 		assertTrue(s.params().indexOf("bar") == 0);
 		assertTrue(s.params().indexOf("5") == 1);
 		assertTrue(s.params().indexOf("10") == 2);

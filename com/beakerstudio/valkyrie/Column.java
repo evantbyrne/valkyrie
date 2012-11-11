@@ -12,5 +12,6 @@ public @interface Column {
 	boolean primary() default false;
 	String type() default "";
 	String field() default "";
+	String middleman() default "";
 	
 }
